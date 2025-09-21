@@ -3,6 +3,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { serverUrl } from "../App";
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1);
@@ -12,8 +13,10 @@ const ForgotPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSendOtp = async () => {
+    setLoading(true);
     try {
       const result = await axios.post(
         `${serverUrl}/api/auth/send-otp`,
@@ -22,15 +25,16 @@ const ForgotPassword = () => {
       );
       console.log(result);
       setErr("");
+      setLoading(false);
       setStep(2);
     } catch (error) {
-      setErr()
-       setErr(error.response.data.message);
-      console.log(error);
+      setLoading(false);
+      setErr(error?.response?.data?.message);
     }
   };
 
   const handleVerifyOtp = async () => {
+    setLoading(true);
     try {
       const result = await axios.post(
         `${serverUrl}/api/auth/verify-otp`,
@@ -39,18 +43,20 @@ const ForgotPassword = () => {
       );
       console.log(result);
       setErr("");
+      setLoading(false);
       setStep(3);
     } catch (error) {
-       setErr(error.response.data.message);
-      console.log(error);
+      setLoading(false);
+      setErr(error?.response?.data?.message);
     }
   };
 
   const handleResetPassword = async () => {
     if (newPassword != confirmPassword) {
-      setErr("NewPassword & ConfirmPassword should be same !")
+      setErr("NewPassword & ConfirmPassword should be same !");
       return null;
     }
+    setLoading(true);
     try {
       const result = await axios.post(
         `${serverUrl}/api/auth/reset-password`,
@@ -59,12 +65,12 @@ const ForgotPassword = () => {
       );
       console.log(result);
       setErr("");
-      setStep(3);
+      // setStep(3);
+      setLoading(false);
       navigate("/signin");
-
     } catch (error) {
-       setErr(error.response.data.message);
-      console.log(error);
+      setLoading(false);
+      setErr(error?.response?.data?.message);
     }
   };
 
@@ -104,10 +110,13 @@ const ForgotPassword = () => {
             <button
               className={`w-full mt-4 font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] cursor-pointer`}
               onClick={handleSendOtp}
+              disabled={loading}
             >
-              Send OTP
+              {loading ? <ClipLoader size={20} color="white" /> : "Send OTP"}
             </button>
-            <p className="text-red-500 text-center my-[10px]">*{err}</p>
+            {err && (
+              <p className="text-red-500 text-center my-[10px]">*{err}</p>
+            )}
           </div>
         )}
 
@@ -133,10 +142,13 @@ const ForgotPassword = () => {
             <button
               className={`w-full mt-4 font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] cursor-pointer`}
               onClick={handleVerifyOtp}
+              disabled={loading}
             >
-              Verify
+              {loading ? <ClipLoader size={20} color="white" /> : "Verify"}
             </button>
-            <p className="text-red-500 text-center my-[10px]">*{err}</p>
+            {err && (
+              <p className="text-red-500 text-center my-[10px]">*{err}</p>
+            )}
           </div>
         )}
 
@@ -179,10 +191,17 @@ const ForgotPassword = () => {
             <button
               className={`w-full mt-4 font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] cursor-pointer`}
               onClick={handleResetPassword}
+              disabled={loading}
             >
-              Reset Password
+              {loading ? (
+                <ClipLoader size={20} color="white" />
+              ) : (
+                "Reset Password"
+              )}
             </button>
-            <p className="text-red-500 text-center my-[10px]">*{err}</p>
+            {err && (
+              <p className="text-red-500 text-center my-[10px]">*{err}</p>
+            )}
           </div>
         )}
       </div>
