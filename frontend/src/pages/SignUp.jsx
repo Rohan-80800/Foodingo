@@ -7,6 +7,8 @@ import { serverUrl } from "../App";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebase";
 import { ClipLoader } from "react-spinners";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 function SignUp() {
   const primaryColor = "#ff4d2d";
@@ -22,6 +24,7 @@ function SignUp() {
   const [mobile, setMobile] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -37,7 +40,7 @@ function SignUp() {
         },
         { withCredentials: true }
       );
-      console.log(result);
+      dispatch(setUserData(result.data));
       setErr("");
       setLoading(false);
     } catch (error) {
@@ -50,7 +53,6 @@ function SignUp() {
     if (!mobile) {
       return setErr("Mobile number is required ");
     }
-    setLoading(true);
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
 
@@ -66,11 +68,9 @@ function SignUp() {
         { withCredentials: true }
       );
 
-      console.log(data);
+      dispatch(setUserData(data));
       setErr("");
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
       setErr(error.response.data.message);
       console.log(error);
     }
