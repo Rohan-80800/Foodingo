@@ -9,6 +9,7 @@ const shopOrderItemSchema = new mongoose.Schema(
       ref: "Item",
       required: true
     },
+    name: String,
     price: Number,
     quantity: Number
   },
@@ -19,13 +20,11 @@ const shopOrderSchema = new mongoose.Schema(
   {
     shop: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Shop",
-      required: true
+      ref: "Shop"
     },
-    Owner: {
+    owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true
+      ref: "User"
     },
     subtotal: Number,
     shopOrderItems: [shopOrderItemSchema]
@@ -37,13 +36,11 @@ const orderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true
+      ref: "User"
     },
     paymentMethod: {
       type: String,
-      enum: ["cod", "online"],
-      required: true
+      enum: ["cod", "online"]
     },
     deliveryAddress: {
       text: String,
@@ -53,7 +50,7 @@ const orderSchema = new mongoose.Schema(
     totalAmount: {
       type: Number
     },
-    shopOrder: [shopOrderSchema]
+    shopOrders: [shopOrderSchema]
   },
   { timestamps: true }
 );
