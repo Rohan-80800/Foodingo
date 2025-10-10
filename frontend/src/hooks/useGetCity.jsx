@@ -21,15 +21,19 @@ function useGetCity() {
       const result = await axios.get(
         `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&format=json&apiKey=${apikey}`
       );
-      dispatch(setCurrentCity(result.data.results[0].city));
-      dispatch(setCurrentState(result.data.results[0].state));
+      dispatch(
+        setCurrentCity(
+          result?.data?.results[0].city || result?.data?.results[0].county
+        )
+      );
+      dispatch(setCurrentState(result?.data?.results[0].state));
       dispatch(
         setCurrentAddress(
           `${result?.data?.results[0].address_line1} ${result?.data?.results[0].address_line2} 
         `
         )
       );
-  dispatch(setAddress(result?.data?.results[0].formatted));
+      dispatch(setAddress(result?.data?.results[0].formatted));
     });
   }, [userData]);
 }

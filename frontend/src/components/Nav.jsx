@@ -12,7 +12,9 @@ import { TbReceipt2 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
 function Nav() {
-  const { userData, currentCity, cartItems } = useSelector((state) => state.user);
+  const { userData, currentCity, cartItems } = useSelector(
+    (state) => state.user
+  );
   const { myShopData } = useSelector((state) => state.owner);
   const [showInfo, setShowInfo] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -30,7 +32,7 @@ function Nav() {
       console.log(error);
     }
   };
- 
+
   return (
     <div className="w-full h-[80px] flex items-center justify-between    md:justify-center gap-[30px] px-[20px] fixed top-0 z-[9999] bg-[#fff9f6] overflow-visible ">
       {showSearch && userData.role == "user" && (
@@ -128,15 +130,17 @@ function Nav() {
           </>
         ) : (
           <>
-            <div
-              className="relative cursor-pointer"
-              onClick={() => navigate("/cart")}
-            >
-              <FiShoppingCart size={25} className="text-[#ff4d2d]" />
-              <span className="absolute right-[-9px] top-[-12px] text-[#ff4d2d]">
-                {cartItems.length}
-              </span>
-            </div>
+            {userData.role == "user" && (
+              <div
+                className="relative cursor-pointer"
+                onClick={() => navigate("/cart")}
+              >
+                <FiShoppingCart size={25} className="text-[#ff4d2d]" />
+                <span className="absolute right-[-9px] top-[-12px] text-[#ff4d2d]">
+                  {cartItems.length}
+                </span>
+              </div>
+            )}
 
             <button
               className="hidden md:block px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] text-sm font-medium "
@@ -155,7 +159,13 @@ function Nav() {
           {userData?.fullName.slice(0, 1)}
         </div>
         {showInfo && (
-          <div className="fixed top-[80px] right-[10px] md:right-[10%] lg:right-[25%] w-[180px] bg-white shadow-2xl rounded-xl p-[20px] flex flex-col gap-[10px] z-[9999] ">
+          <div
+            className={`fixed top-[80px] right-[10px] ${
+              userData.role == "deliveryBoy"
+                ? "md:right-[20%] lg:right-[40%]"
+                : "md:right-[10%] lg:right-[25%]"
+            } w-[180px] bg-white shadow-2xl rounded-xl p-[20px] flex flex-col gap-[10px] z-[9999]`}
+          >
             <div className="text-[17px] font-semibold">{userData.fullName}</div>
 
             {userData.role == "user" && (

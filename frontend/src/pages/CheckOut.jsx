@@ -13,6 +13,7 @@ import { FaCreditCard } from "react-icons/fa";
 
 import axios from "axios";
 import { serverUrl } from "../App";
+import { addMyOrder } from "../redux/userSlice";
 
 function RecenterMap({ location }) {
   const map = useMap();
@@ -93,7 +94,7 @@ function CheckOut() {
         },
         { withCredentials: true }
       );
-      console.log(result.data);
+      dispatch(addMyOrder(result.data));
       navigate("/order-placed");
     } catch (error) {
       console.log(error);
@@ -127,7 +128,7 @@ function CheckOut() {
               placeholder="Enter Your Delivery Address ..."
             />
             <button
-              className="bg-[#ff4d2d] hover:bg-[#e64526] text-white px-3 py-2 rounded-lg flex items-center justify-center"
+              className="bg-[#ff4d2d] hover:bg-[#e64526] text-white px-3 py-2 rounded-lg flex items-center justify-center cursor-pointer"
               onClick={() => {
                 getLatLngByAddress();
               }}
@@ -135,7 +136,7 @@ function CheckOut() {
               <IoSearchOutline size={17} />
             </button>
             <button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center justify-center"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center justify-center cursor-pointer"
               onClick={getCurrentLocation}
             >
               <TbCurrentLocation size={17} />
@@ -171,7 +172,7 @@ function CheckOut() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div
-              className={`flex items-center gap-3 rounded-xl border p-4 text-left transition ${
+              className={`flex items-center gap-3 rounded-xl border p-4 text-left transition cursor-pointer ${
                 paymentMethod === "cod"
                   ? "border-[#ff4d2d] bg-orange-50 shadow"
                   : "border-gray-200 hover:border-gray-300"
@@ -189,7 +190,7 @@ function CheckOut() {
               </div>
             </div>
             <div
-              className={`flex items-center gap-3 rounded-xl border p-4 text-left transition ${
+              className={`flex items-center gap-3 rounded-xl border p-4 text-left transition cursor-pointer ${
                 paymentMethod === "online"
                   ? "border-[#ff4d2d] bg-orange-50 shadow"
                   : "border-gray-200 hover:border-gray-300"
@@ -246,7 +247,7 @@ function CheckOut() {
         </section>
 
         <button
-          className="w-full bg-[#ff4d2d] hover:bg-[#e64526] text-white py-3 rounded-xl font-semibold"
+          className="w-full bg-[#ff4d2d] hover:bg-[#e64526] text-white py-3 rounded-xl font-semibold cursor-pointer"
           onClick={handlePlaceOrder}
         >
           {paymentMethod == "cod" ? "Place Order" : "Pay & Place Order"}
