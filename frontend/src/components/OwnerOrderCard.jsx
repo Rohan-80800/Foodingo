@@ -34,6 +34,23 @@ function OwnerOrderCard({ data }) {
           <MdPhone />
           <span>{data.user.mobile}</span>
         </p>
+        {data.paymentMethod == "online" ? (
+          <p className="text-sm text-gray-500">
+            Payment :{" "}
+            {data.payment ? (
+              <p className="inline font-semibold text-green-500">Paid</p>
+            ) : (
+              <p className="inline font-semibold text-red-500">Not Paid</p>
+            )}
+          </p>
+        ) : (
+          <p className="text-sm text-gray-500">
+            Payment Method :{" "}
+            <p className="inline text-[#ff4d2d] font-semibold">
+              {data.paymentMethod}
+            </p>
+          </p>
+        )}
       </div>
       <div className="flex items-start flex-col gap-2 text-gray-600 text-sm">
         <p>{data?.deliveryAddress.text}</p>
@@ -111,7 +128,7 @@ function OwnerOrderCard({ data }) {
             ))
           ) : data.shopOrders.assignedDeliveryBoy ? (
             <div>
-              {data.shopOrders.assignedDeliveryBoy.fullName} - {" "}
+              {data.shopOrders.assignedDeliveryBoy.fullName} -{" "}
               {data.shopOrders.assignedDeliveryBoy.mobile}
             </div>
           ) : (

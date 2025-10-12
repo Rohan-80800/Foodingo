@@ -4,12 +4,15 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { serverUrl } from "../App";
 import DeliveryBoyTracking from "./DeliveryBoyTracking";
+import { ClipLoader } from "react-spinners";
 
 function DeliveryBoyDashboard() {
   const { userData } = useSelector((state) => state.user);
   const [availableAssignments, setAvailableAssignments] = useState(null);
   const [currentOrder, setCurrentOrder] = useState(null);
   const [showOtpBox, setShowOtpBox] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [otp, setOtp] = useState("");
   const getAssignment = async () => {
     try {
       const result = await axios.get(`${serverUrl}/api/order/get-assignments`, {
@@ -51,9 +54,47 @@ function DeliveryBoyDashboard() {
     }
   };
 
-  const handleSendOtp = () => {
-    setShowOtpBox(true);
-}
+  const sendOtp = async () => {
+    try {
+      setLoading(true);
+      const result = await axios.post(
+        `${serverUrl}/api/order/send-delivery-otp`,
+        { orderId: currentOrder._id, shopOrderId: currentOrder.shopOrder._id },
+        {
+          withCredentials: true
+        }
+      );
+      setShowOtpBox(true);
+      setLoading(false);
+      console.log(result.data);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+  const verifyOtp = async () => {
+    try {
+      setLoading(true);
+      const result = await axios.post(
+        `${serverUrl}/api/order/verify-delivery-otp`,
+        {
+          orderId: currentOrder._id,
+          shopOrderId: currentOrder.shopOrder._id,
+          otp
+        },
+        {
+          withCredentials: true
+        }
+      );
+
+      console.log(result.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     getAssignment();
@@ -135,19 +176,39 @@ function DeliveryBoyDashboard() {
             {!showOtpBox ? (
               <button
                 className="mt-4 w-full bg-green-500 text-white font-semibold py-2 px-4 rounded-xl shadow-md hover:bg-green-600 active:scale-95 transition-all duration-200 cursor-pointer"
-                onClick={handleSendOtp}
+                onClick={sendOtp}
               >
-                Mark As Delivered
+                {loading ? (
+                  <ClipLoader size={20} color="white" />
+                ) : (
+                  "Mark As Delivered"
+                )}
               </button>
             ) : (
               <div className="mt-4 p-4 border rounded-xl bg-gray-50">
                 <p className="text-sm font-semibold mb-2">
-                  Enter OTP sent to <span className="text-orange-500">{currentOrder.user.fullName}</span>
-                  </p>
-                  <input type="text" className="w-full border px-3 py-2 rounded-lg mb-3 focus:outline-none focus:ring-1 focus:ring-orange-400" placeholder="Enter OTP ..."/>
-                  <button className="w-full bg-orange-500 text-white py-2 rounded-lg font-semibold hover:bg-orange-600 transition-all cursor-pointer">
-                    Submit OTP
-                  </button>
+                  Enter OTP sent to{" "}
+                  <span className="text-orange-500">
+                    {currentOrder.user.fullName}
+                  </span>
+                </p>
+                <input
+                  type="text"
+                  className="w-full border px-3 py-2 rounded-lg mb-3 focus:outline-none focus:ring-1 focus:ring-orange-400"
+                  placeholder="Enter OTP ..."
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                />
+                <button
+                  className="w-full bg-orange-500 text-white py-2 rounded-lg font-semibold hover:bg-orange-600 transition-all cursor-pointer"
+                  onClick={verifyOtp}
+                >
+                  {loading ? (
+                    <ClipLoader size={20} color="white" />
+                  ) : (
+                    "Submit OTP"
+                  )}
+                </button>
               </div>
             )}
           </div>

@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import genToken from "../utils/token.js";
-import { sendOtpmail } from "../utils/mail.js";
+import { sendOtpMail } from "../utils/mail.js";
 
 export const signUp = async (req, res) => {
   try {
@@ -104,7 +104,7 @@ export const sendOtp = async (req, res) => {
     user.isOtpVerified = false;
 
     await user.save();
-    await sendOtpmail(email, otp);
+    await sendOtpMail(email, otp);
     return res.status(200).json({ message: "OTP sent successfully !" });
   } catch (error) {
     return res.status(500).json(`Send OTP error ${error}`);

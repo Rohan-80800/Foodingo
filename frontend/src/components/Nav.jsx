@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosSearch } from "react-icons/io";
 import { FiShoppingCart } from "react-icons/fi";
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RxCross2 } from "react-icons/rx";
 import axios from "axios";
 import { serverUrl } from "../App";
-import { setUserData } from "../redux/userSlice";
+import { setSearchItems, setUserData } from "../redux/userSlice";
 import { FaPlus } from "react-icons/fa6";
 import { TbReceipt2 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
@@ -18,8 +18,22 @@ function Nav() {
   const { myShopData } = useSelector((state) => state.owner);
   const [showInfo, setShowInfo] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [query, setQuery] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleSearchItems = async () => {
+    try {
+      const result = await axios.get(
+        `${serverUrl}/api/item/search-items?query=${query}&city=${currentCity}`,
+        { withCredentials: true }
+      );
+      console.log(result.data);
+      dispatch(setSearchItems(result.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleLogOut = async () => {
     try {
@@ -32,6 +46,14 @@ function Nav() {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (query) {
+      handleSearchItems();
+    } else {
+      dispatch(setSearchItems(null));
+    }
+  }, [query]);
 
   return (
     <div className="w-full h-[80px] flex items-center justify-between    md:justify-center gap-[30px] px-[20px] fixed top-0 z-[9999] bg-[#fff9f6] overflow-visible ">
@@ -47,6 +69,8 @@ function Nav() {
               type="text"
               placeholder="search delicious food..."
               className="px-[10px] text-gray-700 outline-0 w-full"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
             />
           </div>
         </div>
@@ -65,6 +89,8 @@ function Nav() {
               type="text"
               placeholder="search delicious food..."
               className="px-[10px] text-gray-700 outline-0 w-full"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
             />
           </div>
         </div>

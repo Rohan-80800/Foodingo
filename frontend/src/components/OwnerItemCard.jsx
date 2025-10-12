@@ -44,7 +44,7 @@ function OwnerItemCard({ data }) {
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="text-[#ff4d2d] font-bold">{data.price}</div>
+          <div className="text-[#ff4d2d] font-bold">₹{data.price}</div>
 
           <div className="flex items-center gap-2 ">
             <div
