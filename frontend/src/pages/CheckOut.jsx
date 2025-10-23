@@ -14,7 +14,6 @@ import { FaCreditCard } from "react-icons/fa";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { addMyOrder } from "../redux/userSlice";
-import { current } from "@reduxjs/toolkit";
 
 function RecenterMap({ location }) {
   const map = useMap();

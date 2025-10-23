@@ -28,10 +28,17 @@ const userSchema = new mongoose.Schema(
     },
     isOtpVerified: {
       type: Boolean,
-      default:false
+      default: false
     },
     otpExpires: {
       type: Date
+    },
+    socketId: {
+      type: String
+    },
+    isOnline: {
+      type: Boolean,
+      default: false
     },
     location: {
       type: { type: String, enum: ["Point"], default: "Point" },
